@@ -5,8 +5,8 @@ from PIL import Image
 import numpy as np
 import cv2
 
-# from .face_detection import detect_faces, align_face
-# from .emotion_analysis import analyze_emotions
+from .face_detection import detect_faces, align_face
+from .emotion_analysis import analyze_emotions
 
 # Flask のインスタンスを作成
 app = Flask(__name__)
@@ -80,9 +80,10 @@ def predicts():
             image.close()
 
             # return render_template('result.html', num_faces=len(faces), image=base64_data)
-            return render_template('result.html', image=base64_data)
+            return render_template('result.html', image=base64_data, num_faces=0)
 
-    elif request.method == 'GET':
+    # elif request.method == 'GET':
+    else:
         return render_template('index.html')
 
 
