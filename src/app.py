@@ -41,34 +41,42 @@ def predicts():
 
                 
 
-            image_cv_rgb = np.array(image)
-            image_cv_bgr = cv2.cvtColor(image_cv_rgb, cv2.COLOR_RGB2BGR)
+            # image_cv_rgb = np.array(image)
+            # image_cv_bgr = cv2.cvtColor(image_cv_rgb, cv2.COLOR_RGB2BGR)
 
-            # 顔検出を実行
-            faces = detect_faces(image_cv_rgb)
+            # # 顔検出を実行
+            # faces = detect_faces(image_cv_rgb)
 
-            for face in faces:
-                aligned_face_cropped, x, y, width, height = align_face(image_cv_rgb, face)
+            # for face in faces:
+            #     aligned_face_cropped, x, y, width, height = align_face(image_cv_rgb, face)
 
-                # 感情分析を実行
-                top_emotion, top_score = analyze_emotions(aligned_face_cropped)
+            #     # 感情分析を実行
+            #     top_emotion, top_score = analyze_emotions(aligned_face_cropped)
 
-                if top_emotion:
-                    cv2.rectangle(image_cv_bgr, (x, y), (x + width, y + height), (0, 255, 0), 2)
-                    cv2.putText(image_cv_bgr, f'{top_emotion} ({top_score})', (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 0, 0), 2)
-                else:
-                    cv2.rectangle(image_cv_bgr, (x, y), (x + width, y + height), (0, 255, 0), 2)
-                    cv2.putText(image_cv_bgr, 'No emotion detected', (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 0, 0), 2)
+            #     if top_emotion:
+            #         cv2.rectangle(image_cv_bgr, (x, y), (x + width, y + height), (0, 255, 0), 2)
+            #         cv2.putText(image_cv_bgr, f'{top_emotion} ({top_score})', (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 0, 0), 2)
+            #     else:
+            #         cv2.rectangle(image_cv_bgr, (x, y), (x + width, y + height), (0, 255, 0), 2)
+            #         cv2.putText(image_cv_bgr, 'No emotion detected', (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 0, 0), 2)
 
-            # image のメモリを解放
-            image.close()
+            # # image のメモリを解放
+            # image.close()
 
-            # 画像をエンコードして base64 に変換            
-            _, buffer = cv2.imencode('.png', image_cv_bgr)
-            image_base64 = base64.b64encode(buffer).decode('utf-8')
-            base64_data = f"data:image/png;base64,{image_base64}"
+            # # 画像をエンコードして base64 に変換            
+            # _, buffer = cv2.imencode('.png', image_cv_bgr)
+            # image_base64 = base64.b64encode(buffer).decode('utf-8')
+            # base64_data = f"data:image/png;base64,{image_base64}"
 
-            return render_template('result.html', num_faces=len(faces), image=base64_data)
+                        #　画像データをバッファに書き込む
+            image.save(buf, 'png')
+            #　バイナリデータを base64 でエンコードして utf-8 でデコード
+            base64_str = base64.b64encode(buf.getvalue()).decode('utf-8')
+            #　HTML 側の src  の記述に合わせるために付帯情報付与する
+            base64_data = 'data:image/png;base64,{}'.format(base64_str)
+
+            # return render_template('result.html', num_faces=len(faces), image=base64_data)
+            return render_template('result.html', 0, image=base64_data)
 
     elif request.method == 'GET':
         return render_template('index.html')
