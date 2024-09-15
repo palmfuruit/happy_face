@@ -75,6 +75,9 @@ def predicts():
             #　HTML 側の src  の記述に合わせるために付帯情報付与する
             base64_data = 'data:image/png;base64,{}'.format(base64_str)
 
+            # image のメモリを解放
+            image.close()
+
             # return render_template('result.html', num_faces=len(faces), image=base64_data)
             return render_template('result.html', 0, image=base64_data)
 
