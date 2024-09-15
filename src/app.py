@@ -69,18 +69,18 @@ def predicts():
             # image_base64 = base64.b64encode(buffer).decode('utf-8')
             # base64_data = f"data:image/png;base64,{image_base64}"
 
-            #　画像データをバッファに書き込む
+            # 画像データをバッファに書き込む
             image.save(buf, 'png')
-            #　バイナリデータを base64 でエンコードして utf-8 でデコード
+            # バイナリデータを base64 でエンコードして utf-8 でデコード
             base64_str = base64.b64encode(buf.getvalue()).decode('utf-8')
-            #　HTML 側の src  の記述に合わせるために付帯情報付与する
+            # HTML 側の src の記述に合わせるために付帯情報付与する
             base64_data = 'data:image/png;base64,{}'.format(base64_str)
 
             # image のメモリを解放
             image.close()
 
             # return render_template('result.html', num_faces=len(faces), image=base64_data)
-            return render_template('result.html', 0, image=base64_data)
+            return render_template('result.html', image=base64_data)
 
     elif request.method == 'GET':
         return render_template('index.html')
