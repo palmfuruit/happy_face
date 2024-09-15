@@ -5,8 +5,8 @@ from PIL import Image
 import numpy as np
 import cv2
 
-from .face_detection import detect_faces, align_face
-from .emotion_analysis import analyze_emotions
+# from .face_detection import detect_faces, align_face
+# from .emotion_analysis import analyze_emotions
 
 # Flask のインスタンスを作成
 app = Flask(__name__)
@@ -29,7 +29,8 @@ def scale_to_width(img, width):
 def predicts():
     if request.method == 'POST':
         if 'filename' not in request.files:
-            return redirect(request.url)
+            # return redirect(request.url)
+            return render_template('index.html')
 
         file = request.files['filename']
         if file and allowed_file(file.filename):
@@ -68,7 +69,7 @@ def predicts():
             # image_base64 = base64.b64encode(buffer).decode('utf-8')
             # base64_data = f"data:image/png;base64,{image_base64}"
 
-                        #　画像データをバッファに書き込む
+            #　画像データをバッファに書き込む
             image.save(buf, 'png')
             #　バイナリデータを base64 でエンコードして utf-8 でデコード
             base64_str = base64.b64encode(buf.getvalue()).decode('utf-8')
