@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dog or Cat</title>
+    <title>😊😡😢感情分析😲😨😖</title>
     <style>
         body {
             display: block;
@@ -40,15 +40,15 @@
 </head>
 
 <body>
-{% if num_faces %}
     <div>
         <img src="{{ image }}">
     </div>
+ {% if num_faces == 0 %}
+    <p style="text-align: center;">検出された顔がありません。</p>
+ {% endif %}
     <div>
         <a href="./">トップへ戻る</a>
     </div>
-{% else %}
-    <p>検出された顔がありません。</p>
-{% endif %}
+
 </body>
 </html>
