@@ -39,6 +39,8 @@ def predicts():
             if image.width > 512:
                 image = scale_to_width(image, 512)
 
+                
+
             image_cv_rgb = np.array(image)
             image_cv_bgr = cv2.cvtColor(image_cv_rgb, cv2.COLOR_RGB2BGR)
 
@@ -58,6 +60,10 @@ def predicts():
                     cv2.rectangle(image_cv_bgr, (x, y), (x + width, y + height), (0, 255, 0), 2)
                     cv2.putText(image_cv_bgr, 'No emotion detected', (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 0, 0), 2)
 
+            # image のメモリを解放
+            image.close()
+
+            # 画像をエンコードして base64 に変換            
             _, buffer = cv2.imencode('.png', image_cv_bgr)
             image_base64 = base64.b64encode(buffer).decode('utf-8')
             base64_data = f"data:image/png;base64,{image_base64}"
