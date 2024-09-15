@@ -39,25 +39,26 @@ def predicts():
             if image.width > 512:
                 image = scale_to_width(image, 512)
 
-            image_cv = np.array(image)
+            image_cv_rgb = np.array(image)
+            image_cv_bgr = cv2.cvtColor(image_cv_rgb, cv2.COLOR_RGB2BGR)
 
             # 顔検出を実行
-            faces = detect_faces(image_cv)
+            faces = detect_faces(image_cv_rgb)
 
             for face in faces:
-                aligned_face_cropped, x, y, width, height = align_face(image_cv, face)
+                aligned_face_cropped, x, y, width, height = align_face(image_cv_rgb, face)
 
                 # 感情分析を実行
                 top_emotion, top_score = analyze_emotions(aligned_face_cropped)
 
                 if top_emotion:
-                    cv2.rectangle(image_cv, (x, y), (x + width, y + height), (0, 255, 0), 2)
-                    cv2.putText(image_cv, f'{top_emotion} ({top_score})', (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 0, 0), 2)
+                    cv2.rectangle(image_cv_bgr, (x, y), (x + width, y + height), (0, 255, 0), 2)
+                    cv2.putText(image_cv_bgr, f'{top_emotion} ({top_score})', (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 0, 0), 2)
                 else:
-                    cv2.rectangle(image_cv, (x, y), (x + width, y + height), (0, 255, 0), 2)
-                    cv2.putText(image_cv, 'No emotion detected', (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 0, 0), 2)
+                    cv2.rectangle(image_cv_bgr, (x, y), (x + width, y + height), (0, 255, 0), 2)
+                    cv2.putText(image_cv_bgr, 'No emotion detected', (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 0, 0), 2)
 
-            _, buffer = cv2.imencode('.png', image_cv)
+            _, buffer = cv2.imencode('.png', image_cv_bgr)
             image_base64 = base64.b64encode(buffer).decode('utf-8')
             base64_data = f"data:image/png;base64,{image_base64}"
 
