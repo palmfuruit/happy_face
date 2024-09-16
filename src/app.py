@@ -45,18 +45,31 @@ def predicts():
             # 顔検出を実行
             faces = detect_faces(image_cv_rgb)
 
+
             for face in faces:
                 aligned_face_cropped, x, y, width, height = align_face(image_cv_rgb, face)
+                print(f"Face detected at x={x}, y={y}, width={width}, height={height}")
 
                 # 感情分析を実行
                 top_emotion, top_score = analyze_emotions(aligned_face_cropped)
 
-                if top_emotion:
-                    cv2.rectangle(image_cv_bgr, (x, y), (x + width, y + height), (0, 255, 0), 2)
-                    cv2.putText(image_cv_bgr, f'{top_emotion} ({top_score})', (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 0, 0), 2)
+                # 表示するテキストの位置を枠の内側に設定
+                text_position_y = y + 20  # 枠の内側の上部に設定
+
+                # 落ち着いた緑色
+                calm_green = (0, 180, 0)
+
+                # スコアに基づいて感情ラベルを表示
+                if top_emotion and top_score >= 50:
+                    cv2.rectangle(image_cv_bgr, (x, y), (x + width, y + height), (0, 255, 0), 2)  # 明るい緑の枠
+                    cv2.putText(image_cv_bgr, f'{top_emotion} ({top_score})', (x + 5, text_position_y), 
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.6, calm_green, 2)  # 太字、落ち着いた緑色のテキスト
                 else:
-                    cv2.rectangle(image_cv_bgr, (x, y), (x + width, y + height), (0, 255, 0), 2)
-                    cv2.putText(image_cv_bgr, 'No emotion detected', (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (255, 0, 0), 2)
+                    cv2.rectangle(image_cv_bgr, (x, y), (x + width, y + height), (0, 255, 0), 2)  # 明るい緑の枠
+                    cv2.putText(image_cv_bgr, 'No emotion detected', (x + 5, text_position_y), 
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.6, calm_green, 2)  # 太字、落ち着いた緑色のテキスト
+                    
+
 
             _, buffer = cv2.imencode('.png', image_cv_bgr)
             image_base64 = base64.b64encode(buffer).decode('utf-8')
