@@ -1,0 +1,3 @@
+このモデルを使用
+
+https://huggingface.co/motheecreator/vit-Facial-Expression-Recognition
