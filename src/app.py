@@ -37,8 +37,8 @@ def predicts():
             buf = io.BytesIO()
             image = Image.open(file).convert('RGB')
 
-            if image.width > 512:
-                image = scale_to_width(image, 512)
+            if image.width > 256:
+                image = scale_to_width(image, 256)
 
                 
             # PIL 画像を OpenCV 形式に変換
