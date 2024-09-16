@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>😊😡😢感情分析😲😨😖</title>
+    <style>
+        body {
+            display: block;
+            justify-content: center;
+            align-items: start;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        div {
+            display: flex;
+            justify-content: center;
+        }
+        h1 {
+            text-align: center;
+        }
+        input[type="file"] {
+            margin-bottom: 10px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+        /* リンクをボタン風にスタイル */
+        a.button {
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: white;
+            background-color: #808080; /* グレーに設定 */
+            text-decoration: none;
+            border-radius: 5px;
+            text-align: center;
+            transition: background-color 0.3s ease;
+            margin-top: 20px;
+        }
+        a.button:hover {
+            background-color: #505050; /* 濃いグレーに変更 */
+        }
+    </style>
+</head>
+<body>
+    <h1>😊😡😢感情分析😲😨😖</h1>
+    {% block content %}{% endblock %}
+</body>
+</html>

@@ -1,51 +1,8 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>😊😡😢感情分析😲😨😖</title>
-    <style>
-        body {
-            display: block;
-            justify-content: center;
-            align-items: start;
-            height: 100vh;
-            margin: 0;
-            font-family: Arial, sans-serif;
-        }
-        form {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            /* border: 1px solid #ccc; */
-            padding: 20px;
-            /* border-radius: 10px; */
-            /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
-        }
-        div {
-            display: flex;
-            justify-content: center;
-        }
-        h1 {
-            text-align: center;
-        }
-        input[type="file"] {
-            margin-bottom: 10px;
-        }
-        img {
-            max-width: 100%;
-            height: auto;
-        }
-    </style>
-</head>
+{% extends "base.html" %}
 
-<body>
-    <h1>
-        😊😡😢感情分析😲😨😖
-    </h1>
-    <form method = post enctype = multipart/form-data>
-        <p><input type = file name = filename>
-        <input type = submit value = 判定>
-    </form>
-</body>
-</html>
+{% block content %}
+<form method="post" enctype="multipart/form-data">
+    <p><input type="file" name="filename">
+    <input type="submit" value="判定">
+</form>
+{% endblock %}
