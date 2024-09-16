@@ -3,7 +3,7 @@ import cv2
 from mtcnn import MTCNN
 
 # MTCNNの顔検出モデルを初期化（閾値を調整）
-detector = MTCNN(steps_threshold=[0.5, 0.6, 0.7])  # ここで閾値を調整
+detector = MTCNN(steps_threshold=[0.6, 0.7, 0.7])  # ここで閾値を調整
 
 def detect_faces(image_cv):
     # 顔検出を実行
