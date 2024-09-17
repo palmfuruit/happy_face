@@ -66,7 +66,7 @@ def draw_emotion_boxes(faces, image_cv_rgb, image_cv_bgr, max_scores):
         text_position_y = y + 20
         font_scale = 1.5
         font = cv2.FONT_HERSHEY_PLAIN
-        text = f'{top_emotion} ({top_score})' if top_emotion and top_score >= 50 else 'No emotion detected'
+        text = f'{top_emotion} ({top_score})'
         (text_width, text_height), baseline = cv2.getTextSize(text, font, font_scale, font_thickness)
         cv2.rectangle(image_cv_bgr, (x, y), (x + text_width + 10, y + text_height + baseline), box_color, -1)
         cv2.rectangle(image_cv_bgr, (x, y), (x + width, y + height), box_color, box_thickness)
