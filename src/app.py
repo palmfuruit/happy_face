@@ -46,10 +46,10 @@ def process_image(file):
     return image_cv_rgb, image_cv_bgr
 
 # 感情スコアを解析し、最大スコアを保持する
-def get_max_emotion_scores(faces, image_cv_rgb):
+def get_max_emotion_scores(faces, image_cv_bgr):
     max_scores = {}
     for face in faces:
-        aligned_face_cropped, _, _, _, _ = align_face(image_cv_rgb, face)
+        aligned_face_cropped, _, _, _, _ = align_face(image_cv_bgr, face)
         top_emotion, top_score = analyze_emotions(aligned_face_cropped)
         if top_emotion:
             top_emotion_lower = top_emotion.lower()
@@ -58,9 +58,9 @@ def get_max_emotion_scores(faces, image_cv_rgb):
     return max_scores
 
 # 顔に感情の枠とラベルを描画する
-def draw_emotion_boxes(faces, image_cv_rgb, image_cv_bgr, max_scores):
+def draw_emotion_boxes(faces, image_cv_bgr, max_scores):
     for face in faces:
-        aligned_face_cropped, x, y, width, height = align_face(image_cv_rgb, face)
+        aligned_face_cropped, x, y, width, height = align_face(image_cv_bgr, face)
         top_emotion, top_score = analyze_emotions(aligned_face_cropped)
         box_color, text_color, box_thickness, font_thickness = get_emotion_box_colors(top_emotion, top_score, max_scores)
 
@@ -121,8 +121,8 @@ def predicts():
         if file and allowed_file(file.filename):
             image_cv_rgb, image_cv_bgr = process_image(file)
             faces = detect_faces(image_cv_rgb)
-            max_scores = get_max_emotion_scores(faces, image_cv_rgb)
-            draw_emotion_boxes(faces, image_cv_rgb, image_cv_bgr, max_scores)
+            max_scores = get_max_emotion_scores(faces, image_cv_bgr)
+            draw_emotion_boxes(faces, image_cv_bgr, max_scores)
             _, buffer = cv2.imencode('.png', image_cv_bgr)
             image_base64 = base64.b64encode(buffer).decode('utf-8')
             base64_data = f"data:image/png;base64,{image_base64}"
