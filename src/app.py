@@ -45,26 +45,38 @@ def process_image(file):
     image_cv_bgr = cv2.cvtColor(image_cv_rgb, cv2.COLOR_RGB2BGR)
     return image_cv_rgb, image_cv_bgr
 
-# 感情スコアを解析し、最大スコアを保持する
-def get_max_emotion_scores(faces, image_cv_bgr):
-    max_scores = {}
+# 顔ごとの感情スコアを計算し、各感情の最大スコアを保持する
+def get_emotion_results(faces, image_cv_bgr):
+    emotion_results = []  # 各顔の感情結果を格納
+    # 各感情の初期値を0に設定
+    each_emotion_max_score = {emotion: 0 for emotion in emotion_colors.keys()}
+    
     for face in faces:
         aligned_face_cropped, _, _, _, _ = align_face(image_cv_bgr, face)
         top_emotion, top_score = analyze_emotions(aligned_face_cropped)
+        
         if top_emotion:
             top_emotion_lower = top_emotion.lower()
-            if top_emotion_lower not in max_scores or max_scores[top_emotion_lower] < top_score:
-                max_scores[top_emotion_lower] = top_score
-    return max_scores
+            
+            # 各感情ごとの最大スコアを更新
+            each_emotion_max_score[top_emotion_lower] = max(each_emotion_max_score[top_emotion_lower], top_score)
+            
+            # 顔ごとの結果をemotion_resultsに保存
+            emotion_results.append({'emotion': top_emotion, 'score': top_score})
+    
+    return emotion_results, each_emotion_max_score
 
 # 顔に感情の枠とラベルを描画する
-def draw_emotion_boxes(faces, image_cv_bgr, max_scores):
-    for face in faces:
+def draw_emotion_boxes(faces, image_cv_bgr, emotion_results, each_emotion_max_score):
+    for face, emotion_data in zip(faces, emotion_results):
         aligned_face_cropped, x, y, width, height = align_face(image_cv_bgr, face)
-        top_emotion, top_score = analyze_emotions(aligned_face_cropped)
-        box_color, text_color, box_thickness, font_thickness = get_emotion_box_colors(top_emotion, top_score, max_scores)
-
-        # Draw the bounding box around the face first
+        top_emotion, top_score = emotion_data['emotion'], emotion_data['score']
+        
+        # 太字や太枠にするかどうかのチェックをシンプル化
+        is_max_score = each_emotion_max_score[top_emotion.lower()] == top_score
+        box_color, text_color, box_thickness, font_thickness = get_emotion_box_colors(top_emotion, is_max_score)
+        
+        # Draw the bounding box around the face
         cv2.rectangle(image_cv_bgr, (x, y), (x + width, y + height), box_color, box_thickness)
 
         # Font settings
@@ -96,7 +108,7 @@ def draw_emotion_boxes(faces, image_cv_bgr, max_scores):
 
 
 # 感情ごとの枠と文字の色を取得する
-def get_emotion_box_colors(top_emotion, top_score, max_scores):
+def get_emotion_box_colors(top_emotion, is_max_score):
     box_color = (0, 255, 0)
     text_color = (0, 180, 0)
     box_thickness = 2
@@ -104,9 +116,12 @@ def get_emotion_box_colors(top_emotion, top_score, max_scores):
     if top_emotion and top_emotion.lower() in emotion_colors:
         box_color = emotion_colors[top_emotion.lower()]['box_color']
         text_color = emotion_colors[top_emotion.lower()]['text_color']
-        if top_emotion.lower() in max_scores and max_scores[top_emotion.lower()] == top_score:
+        
+        # 最大スコアかどうかをチェックして太枠・太字を決定
+        if is_max_score:
             box_thickness = 4
             font_thickness = 2
+    
     return box_color, text_color, box_thickness, font_thickness
 
 
@@ -121,8 +136,8 @@ def predicts():
         if file and allowed_file(file.filename):
             image_cv_rgb, image_cv_bgr = process_image(file)
             faces = detect_faces(image_cv_rgb)
-            max_scores = get_max_emotion_scores(faces, image_cv_bgr)
-            draw_emotion_boxes(faces, image_cv_bgr, max_scores)
+            emotion_results, each_emotion_max_score = get_emotion_results(faces, image_cv_bgr)
+            draw_emotion_boxes(faces, image_cv_bgr, emotion_results, each_emotion_max_score)
             _, buffer = cv2.imencode('.png', image_cv_bgr)
             image_base64 = base64.b64encode(buffer).decode('utf-8')
             base64_data = f"data:image/png;base64,{image_base64}"
