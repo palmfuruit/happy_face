@@ -55,15 +55,16 @@ def analyze_emotions(aligned_face_cropped):
     emotion_scores = predictions.logits[0]  # logitsを使用
     emotion_probs = F.softmax(emotion_scores, dim=0)  # softmaxを適用して合計が1になるようにする
 
-    # 全ての感情スコア（確率）を表示
+    emotion_dict = {}
     for i, prob in enumerate(emotion_probs):
         emotion = emotion_labels[i]
-        prob_percentage = prob.item() * 100  # 確率を0-100%に変換
-        print(f"{emotion}: {prob_percentage:.2f}%")
+        prob_value = round(prob.item(), 5)  # 小数第5位までに丸める
+        emotion_dict[emotion] = prob_value
     
-    # 最も高い確率の感情を取得
-    top_emotion_index = torch.argmax(emotion_probs).item()
-    top_emotion = emotion_labels[top_emotion_index]
-    top_prob = round(emotion_probs[top_emotion_index].item() * 100)
+    print(emotion_dict)  
+    
+    # 最もスコアの高い感情とその確率を取得
+    top_emotion = max(emotion_dict, key=emotion_dict.get)
+    top_prob = emotion_dict[top_emotion]
     
     return top_emotion, top_prob

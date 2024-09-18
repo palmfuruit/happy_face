@@ -63,14 +63,37 @@ def draw_emotion_boxes(faces, image_cv_rgb, image_cv_bgr, max_scores):
         aligned_face_cropped, x, y, width, height = align_face(image_cv_rgb, face)
         top_emotion, top_score = analyze_emotions(aligned_face_cropped)
         box_color, text_color, box_thickness, font_thickness = get_emotion_box_colors(top_emotion, top_score, max_scores)
-        text_position_y = y + 20
+
+        # Draw the bounding box around the face first
+        cv2.rectangle(image_cv_bgr, (x, y), (x + width, y + height), box_color, box_thickness)
+
+        # Font settings
         font_scale = 1.5
         font = cv2.FONT_HERSHEY_PLAIN
-        text = f'{top_emotion} ({top_score})'
-        (text_width, text_height), baseline = cv2.getTextSize(text, font, font_scale, font_thickness)
+
+        # Calculate position and size for emotion text
+        emotion_text = f'{top_emotion}'
+        (text_width, text_height), baseline = cv2.getTextSize(emotion_text, font, font_scale, font_thickness)
+        emotion_y_position = y + text_height + 5
+        
+        # Draw background for emotion text
         cv2.rectangle(image_cv_bgr, (x, y), (x + text_width + 10, y + text_height + baseline), box_color, -1)
-        cv2.rectangle(image_cv_bgr, (x, y), (x + width, y + height), box_color, box_thickness)
-        cv2.putText(image_cv_bgr, text, (x + 5, y + text_height), font, font_scale, text_color, font_thickness)
+        # Draw emotion text on top of the background
+        cv2.putText(image_cv_bgr, emotion_text, (x + 5, emotion_y_position), font, font_scale, text_color, font_thickness)
+
+        # Calculate position and size for score text
+        score_text = f'Score: {round(top_score * 100)}'
+        score_font_scale = 1.0
+        score_font_thickness = 1
+        (score_text_width, score_text_height), _ = cv2.getTextSize(score_text, font, score_font_scale, score_font_thickness)
+        score_y_position = y + height - 5
+        
+        # Draw background for score text
+        cv2.rectangle(image_cv_bgr, (x, score_y_position - score_text_height), 
+                      (x + score_text_width + 10, score_y_position + baseline), box_color, -1)
+        # Draw score text on top of the background
+        cv2.putText(image_cv_bgr, score_text, (x + 5, score_y_position), font, score_font_scale, text_color, score_font_thickness)
+
 
 # 感情ごとの枠と文字の色を取得する
 def get_emotion_box_colors(top_emotion, top_score, max_scores):
